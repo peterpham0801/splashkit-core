@@ -16,7 +16,7 @@ TEST_CASE("sound effects can be loaded, played and freed", "[sound_effect]")
     {
         open_audio();
         REQUIRE(audio_ready() == true);
-    }    
+    }
     SECTION("can detect non-existent sound effect")
     {
         REQUIRE(has_sound_effect("non_existent") == false);
@@ -86,5 +86,61 @@ TEST_CASE("sound effects can be loaded, played and freed", "[sound_effect]")
             REQUIRE(has_sound_effect(name1) == false);
             REQUIRE(has_sound_effect(name2) == false);
         }
+    }
+    SECTION("handle invalid inputs")
+    {
+        REQUIRE_THROWS_AS(load_sound_effect("", ""), std::invalid_argument);
+        REQUIRE_THROWS_AS(load_sound_effect("", "valid_file.wav"), std::invalid_argument);
+        REQUIRE_THROWS_AS(load_sound_effect("valid_name", ""), std::invalid_argument);
+    }
+    SECTION("handle duplicate sound effect names")
+    {
+        sound_effect snd1 = load_sound_effect("duplicate_name", "file1.wav");
+        REQUIRE(snd1 != nullptr);
+        REQUIRE(has_sound_effect("duplicate_name") == true);
+
+        sound_effect snd2 = load_sound_effect("duplicate_name", "file2.wav");
+        REQUIRE(snd2 == nullptr); // Assuming duplicate names are not allowed
+        REQUIRE(sound_effect_named("duplicate_name") == snd1);
+    }
+    SECTION("ensure all resources are cleaned up")
+    {
+        sound_effect snd1 = load_sound_effect("sound1", "file1.wav");
+        sound_effect snd2 = load_sound_effect("sound2", "file2.wav");
+
+        free_all_sound_effects();
+        REQUIRE(has_sound_effect("sound1") == false);
+        REQUIRE(has_sound_effect("sound2") == false);
+
+        // Optionally, check for memory leaks or dangling pointers if applicable
+    }
+    SECTION("free individual sound effects")
+    {
+        sound_effect snd1 = load_sound_effect("sound1", "file1.wav");
+        sound_effect snd2 = load_sound_effect("sound2", "file2.wav");
+
+        REQUIRE(has_sound_effect("sound1") == true);
+        REQUIRE(has_sound_effect("sound2") == true);
+
+        free_sound_effect(snd1);
+        REQUIRE(has_sound_effect("sound1") == false);
+        REQUIRE(has_sound_effect("sound2") == true);
+    }
+    SECTION("play and stop edge cases")
+    {
+        sound_effect snd = load_sound_effect("test_sound", "test.wav");
+        REQUIRE(snd != nullptr);
+
+        stop_sound_effect(snd); // Stopping before playing should not cause issues
+        REQUIRE(sound_effect_playing(snd) == false);
+
+        play_sound_effect(snd);
+        REQUIRE(sound_effect_playing(snd) == true);
+
+        play_sound_effect(snd); // Playing again while already playing should not cause issues
+        REQUIRE(sound_effect_playing(snd) == true);
+
+        stop_sound_effect(snd);
+        REQUIRE(sound_effect_playing(snd) == false);
     }
 }
