@@ -10,6 +10,16 @@
 
 using namespace splashkit_lib;
 
+// Constants for expected dimensions
+constexpr int COTTAGE_WIDTH = 500;
+constexpr int COTTAGE_HEIGHT = 333;
+constexpr int PLAYER_WIDTH = 300;
+constexpr int PLAYER_HEIGHT = 42;
+constexpr int UFO_WIDTH = 35;
+constexpr int UFO_HEIGHT = 33;
+constexpr int ROCKET_WIDTH = 36;
+constexpr int ROCKET_HEIGHT = 72;
+
 TEST_CASE("bitmaps can be created and freed", "[bitmap]")
 {
     SECTION("can detect non-existent bitmap")
@@ -24,8 +34,11 @@ TEST_CASE("bitmaps can be created and freed", "[bitmap]")
     {
         bitmap bmp;
         string filename = "cottage_door_and_window_199195.jpg", name = "cottage";
+<<<<<<< HEAD
         int width = 500, height = 333;
 
+=======
+>>>>>>> origin/unit_test_fixes
         SECTION("can load bitmap")
         {
             REQUIRE(has_bitmap(name) == false);
@@ -33,8 +46,8 @@ TEST_CASE("bitmaps can be created and freed", "[bitmap]")
             REQUIRE(bmp != nullptr);
             REQUIRE(has_bitmap(name) == true);
             REQUIRE(bitmap_valid(bmp) == true);
-            REQUIRE(bitmap_width(bmp) == width);
-            REQUIRE(bitmap_height(bmp) == height);
+            REQUIRE(bitmap_width(bmp) == COTTAGE_WIDTH);
+            REQUIRE(bitmap_height(bmp) == COTTAGE_HEIGHT);
             REQUIRE(bitmap_name(bmp) == name);
             REQUIRE(bitmap_filename(bmp) == path_to_resource(filename, IMAGE_RESOURCE));
             REQUIRE(bitmap_named(name) == bmp);
@@ -51,8 +64,11 @@ TEST_CASE("bitmaps can be created and freed", "[bitmap]")
     {
         bitmap bmp1, bmp2;
         string filename1 = "player.png", name1 = "player", filename2 = "ufo.png", name2 = "ufo";
+<<<<<<< HEAD
         int width1 = 300, height1 = 42, width2 = 35, height2 = 33;
 
+=======
+>>>>>>> origin/unit_test_fixes
         SECTION("can load and create two bitmaps")
         {
             REQUIRE(has_bitmap(name1) == false);
